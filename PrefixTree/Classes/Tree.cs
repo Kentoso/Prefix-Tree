@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
+using System.Threading;
 
 namespace PrefixTree.Classes
 {
@@ -21,7 +22,7 @@ namespace PrefixTree.Classes
             }
             else
             {
-                InsertNode(Root, key.ToCharArray());
+                InsertNode(Root, key.ToLower().ToCharArray());
                 if (key.Length > 0) words.Add(key);
             }
         }
@@ -47,24 +48,24 @@ namespace PrefixTree.Classes
 
         public void DrawTree(Graphics graphics)
         {
-            DrawNode(graphics, Root, (780, 20), 1, 1);
+            DrawNode(graphics, Root, (780, 50), 1, 1);
         }
         public void DrawNode(Graphics graphics, Node currentNode, (float X, float Y) position, float scaleX, float scaleY)
         {
             if (currentNode.Children.Count > 0)
             {
                 int i = 0;
-                float offsetX = 70;
+                float offsetX = 80;
                 float offsetY = 20;
                 foreach (var key in currentNode.Children.Keys)
                 {
-                    float X = (position.X - i * offsetX * (float)Math.Pow(scaleX, 3));
+                    float X = (position.X - i * offsetX * (float)Math.Pow(scaleX, 2));
                     float Y = position.Y + offsetY * scaleY;
                     Brush brush = currentNode.Children[key].IsEndOfWord ? Brushes.DodgerBlue : Brushes.Black;
                     graphics.DrawString(currentNode.Children[key].Character.ToString(), new Font(FontFamily.GenericSansSerif, 10), brush, X, Y);
                     graphics.DrawLine(Pens.Black, position.X, position.Y, X, Y);
                     graphics.DrawRectangle(Pens.Black, X, Y, 12, 18);
-                    DrawNode(graphics, currentNode.Children[key], (X, Y + 10), scaleX * 0.60f, scaleY);
+                    DrawNode(graphics, currentNode.Children[key], (X, Y + 10), scaleX * 0.65f, scaleY);
                     i++;
                 }
                 
@@ -87,39 +88,18 @@ namespace PrefixTree.Classes
             words.Remove(key);
 
         }
-
-        public string SearchWords(string search)
+        public bool SearchWord(string search, List<string> words)
         {
-            return SearchChar(Root, search.ToCharArray());
-        }
-
-        private string SearchChar(Node currentNode, char[] keys)
-        {
-            string result = "";
-           
-            for (int j = 0; j < keys.Length; j++)
+            if (words.Contains(search))
             {
-                if (currentNode.Children.ContainsKey(keys[j]))
-                {
-                    currentNode = currentNode.Children[keys[j]];
-                    result += keys[j];
-                }
+                return true;
             }
-            while (!currentNode.IsEndOfWord)
+            else
             {
-                foreach (var childrenKey in currentNode.Children.Keys)
-                {
-                    if (currentNode.Children.ContainsKey(childrenKey))
-                    {
-                        currentNode = currentNode.Children[childrenKey];
-                        result += childrenKey;
-                    }
-                }
+                return false;
             }
-            int i = 0;
-            
-            return result;
         }
+       
 
     }
 }

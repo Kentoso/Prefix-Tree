@@ -29,7 +29,6 @@ namespace PrefixTree
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //label1.Text = $"Word: {tree.SearchWords(textBox1.Text)}";
             tree.InsertKey(textBox1.Text, ref list);
             this.CreateGraphics().Clear(SystemColors.Control);
             tree.DrawTree(this.CreateGraphics());
@@ -37,7 +36,8 @@ namespace PrefixTree
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            
+            this.CreateGraphics().Clear(SystemColors.Control);
+            tree.DrawTree(this.CreateGraphics());
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -85,6 +85,14 @@ namespace PrefixTree
             }
             list = listNew;
             tree.DrawTree(this.CreateGraphics());
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (tree.SearchWord(textBox3.Text, list))
+            {
+                label1.Text = $"Word \"{textBox3.Text}\" is in tree";
+            }
         }
     }
 }
